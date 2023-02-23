@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SliderValueCubit>(
+    return BlocProvider(
       create: (context) => SliderValueCubit(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

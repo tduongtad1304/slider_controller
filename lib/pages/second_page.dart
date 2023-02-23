@@ -10,9 +10,6 @@ class SecondPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double opacityValue =
-        context.select((SliderValueCubit cubit) => cubit.state.opacityValue);
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -22,15 +19,11 @@ class SecondPage extends StatelessWidget {
               title: 'Animated Opacity Controller',
               content:
                   'An animated opacity widget that can be used to fade in or out a widget within given duration.',
-              popText: 'OK, I agree!', onPopTextPressed: () {
-            Navigator.of(context).pop();
-          }),
+              popText: 'OK, I agree!',
+              onPopTextPressed: () => Navigator.of(context).pop()),
           IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                createRoute(const ThirdPage()),
-              );
-            },
+            onPressed: () =>
+                Navigator.of(context).push(createRoute(const ThirdPage())),
             icon: const Icon(Icons.looks_3),
             tooltip: 'Move to second page',
           ),
@@ -39,35 +32,38 @@ class SecondPage extends StatelessWidget {
         title: const Text('Animated Opacity Controller'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            AnimatedOpacity(
-              opacity: opacityValue,
-              duration: const Duration(seconds: 1),
-              child: const FlutterLogo(
-                size: 180,
-              ),
-            ),
-            const SizedBox(height: 40),
-            Text(
-              'Animated Opacity: ${opacityValue.toStringAsFixed(2)}',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  ?.copyWith(color: Colors.black54),
-            ),
-            const SizedBox(height: 16),
-            Slider.adaptive(
-              activeColor: Colors.teal,
-              divisions: 100,
-              label: opacityValue.toStringAsFixed(2),
-              value: opacityValue,
-              onChanged: (opacityValue) {
-                context.read<SliderValueCubit>().setOpacity(opacityValue);
-              },
-            ),
-          ],
+        child: BlocSelector<SliderValueCubit, SliderValueState, double>(
+          selector: (state) => state.opacityValue,
+          builder: (context, state) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedOpacity(
+                  opacity: state,
+                  duration: const Duration(milliseconds: 400),
+                  child: const FlutterLogo(size: 180),
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  'Animated Opacity: ${state.toStringAsFixed(2)}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(color: Colors.black54),
+                ),
+                const SizedBox(height: 16),
+                Slider.adaptive(
+                  activeColor: Colors.teal,
+                  divisions: 100,
+                  label: state.toStringAsFixed(2),
+                  value: state,
+                  onChanged: (opacityValue) {
+                    context.read<SliderValueCubit>().setOpacity(opacityValue);
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

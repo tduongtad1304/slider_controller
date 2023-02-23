@@ -10,26 +10,22 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double opacityValue =
-        context.select((SliderValueCubit cubit) => cubit.state.opacityValue);
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         actions: [
-          createIconInfoButton(context, 'Opacity Controller Info',
-              title: 'Opacity Controller',
-              content:
-                  'An opacity widget that can be used to set the opaticy of a widget.',
-              popText: 'OK, I agree!', onPopTextPressed: () {
-            Navigator.of(context).pop();
-          }),
+          createIconInfoButton(
+            context,
+            'Opacity Controller Info',
+            title: 'Opacity Controller',
+            content:
+                'An opacity widget that can be used to set the opaticy of a widget.',
+            popText: 'OK, I agree!',
+            onPopTextPressed: () => Navigator.of(context).pop(),
+          ),
           IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                createRoute(const SecondPage()),
-              );
-            },
+            onPressed: () =>
+                Navigator.of(context).push(createRoute(const SecondPage())),
             icon: const Icon(Icons.looks_two),
             tooltip: 'Move to second page',
           ),
@@ -38,33 +34,36 @@ class MyHomePage extends StatelessWidget {
         title: const Text('Opacity Controller'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Opacity(
-              opacity: opacityValue,
-              child: const FlutterLogo(
-                size: 180,
-              ),
-            ),
-            const SizedBox(height: 40),
-            Text(
-              'Opacity: ${opacityValue.toStringAsFixed(2)}',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  ?.copyWith(color: Colors.black54),
-            ),
-            const SizedBox(height: 16),
-            Slider.adaptive(
-              divisions: 100,
-              label: opacityValue.toStringAsFixed(2),
-              value: opacityValue,
-              onChanged: (opacityValue) {
-                context.read<SliderValueCubit>().setOpacity(opacityValue);
-              },
-            ),
-          ],
+        child: BlocSelector<SliderValueCubit, SliderValueState, double>(
+          selector: (state) => state.opacityValue,
+          builder: (context, state) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Opacity(
+                  opacity: state,
+                  child: const FlutterLogo(size: 180),
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  'Opacity: ${state.toStringAsFixed(2)}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(color: Colors.black54),
+                ),
+                const SizedBox(height: 16),
+                Slider.adaptive(
+                  divisions: 100,
+                  label: state.toStringAsFixed(2),
+                  value: state,
+                  onChanged: (opacityValue) {
+                    context.read<SliderValueCubit>().setOpacity(opacityValue);
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

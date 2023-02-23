@@ -5,6 +5,6 @@ import 'package:slider_controller/slider_controller_observer.dart';
 import 'app.dart';
 
 void main() {
-  BlocOverrides.runZoned(() => runApp(const MyApp()),
-      blocObserver: SliderControllerObserver());
+  Bloc.observer = SliderControllerObserver();
+  runApp(const MyApp());
 }
